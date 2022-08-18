@@ -23,6 +23,19 @@ router.get('/', (req,res)=>{
     res.send(users)
 })
 
+router.post('/', (req,res)=>{
+    users.push(req.body)
+    res.send('added user')
+})
+router.put('/:id', (req,res)=>{
+    users[req.params.id]=req.body
+    res.send('updated user')
+})
+router.delete('/:id', (req,res)=>{
+    users.splice(req.params.id-1,1)
+    res.send('deleted user')
+})
+
 router.get('/:num', (req,res)=>{
     
     res.send(users[req.params.num -1])
