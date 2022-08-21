@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
+const {check,validationResult}=require('express-validator')
 let fruits = [
     {
         name: "Apple",
@@ -29,9 +29,13 @@ router.get('/', (req,res)=>{
     res.send(fruits)
 })
 
-router.post('/', (req,res)=>{
+router.post('/', [check("color").trim().not().isEmpty()],(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).send({error: errors.array()})
+    }
     fruits.push(req.body)
-    res.send('added fruit')
+    res.send(fruits)
 })
 router.put('/:id', (req,res)=>{
     fruits[req.params.id]=req.body
@@ -39,7 +43,7 @@ router.put('/:id', (req,res)=>{
 })
 router.delete('/:id', (req,res)=>{
     fruits.splice(req.params.id-1,1)
-    res.send('deleted fruit')
+    res.send(fruits)
 })
 
 module.exports = router

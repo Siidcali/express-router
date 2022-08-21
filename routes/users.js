@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
+const {check, validationResult} = require('express-validator')
 let users = [
     {
         name: "User 1",
@@ -23,9 +23,13 @@ router.get('/', (req,res)=>{
     res.send(users)
 })
 
-router.post('/', (req,res)=>{
+router.post('/', [check("name").trim().not().isEmpty()],(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).send({error: errors.array()})
+    }
     users.push(req.body)
-    res.send('added user')
+    res.send(users)
 })
 router.put('/:id', (req,res)=>{
     users[req.params.id]=req.body
